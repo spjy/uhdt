@@ -1,0 +1,18 @@
+{
+  "name": "uhdt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dataset_creation.js",
+  "scripts": {
+    "start": "nodemon dataset_creation.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jimp": "^0.5.6"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  }
+}
