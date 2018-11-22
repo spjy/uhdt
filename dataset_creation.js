@@ -9,6 +9,10 @@ const imageDirectory = `./dataset/images/test`;
 fs.readdirSync(imageDirectory)
   .map(async (imageName) => {
     try {
+      // Define possible alphanumeric values
+
+      const letters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ';
+
       // Define possible shapes
       const shapes = [
         'HalfCircle',
@@ -41,6 +45,21 @@ fs.readdirSync(imageDirectory)
           { apply: 'blue', params: [255] }
         ],
         [
+          { apply: 'red', params: [128] },
+          { apply: 'green', params: [0] },
+          { apply: 'blue', params: [128] }
+        ],
+        [
+          { apply: 'red', params: [165] },
+          { apply: 'green', params: [42] },
+          { apply: 'blue', params: [42] }
+        ],
+        [
+          { apply: 'red', params: [255] },
+          { apply: 'green', params: [165] },
+          { apply: 'blue', params: [0] }
+        ],
+        [
           { apply: 'red', params: [0] },
           { apply: 'green', params: [0] },
           { apply: 'blue', params: [0] }
@@ -60,36 +79,30 @@ fs.readdirSync(imageDirectory)
           { apply: 'green', params: [255] },
           { apply: 'blue', params: [0] }
         ],
-        [
-          { apply: 'red', params: [128] },
-          { apply: 'green', params: [0] },
-          { apply: 'blue', params: [128] }
-        ],
-        [
-          { apply: 'red', params: [165] },
-          { apply: 'green', params: [42] },
-          { apply: 'blue', params: [42] }
-        ],
-        [
-          { apply: 'red', params: [255] },
-          { apply: 'green', params: [165] },
-          { apply: 'blue', params: [0] }
-        ],
       ];
 
+      const randLetter = Math.floor((Math.random() * letters.length));
       const randShape = Math.floor((Math.random() * shapes.length));
       const randColor = Math.floor((Math.random() * colors.length));
 
       // Import a random shape into Jimp
-      const shape = await Jimp.read(`./Shapes/${shapes[randShape]}.jpg`);
+      const shape = await Jimp.read(`./shapes/${shapes[randShape]}.png`);
 
-      // Append a random letter to shape
-      const font = await Jimp.loadFont(Jimp.FONT_SANS_14_BLACK);
+      // Append a random letter to shape. If light color use black text, otherwise use white.
+      let font;
+      if (randColor > 6) {
+        font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
+      } else {
+        font = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
+      }
 
       // Attach a color and letter to the shape image
       shape
+        .print(font, shape.bitmap.width / 2, shape.bitmap.height / 2, letters[randLetter])
+        .rotate(Math.random() * 360)
         .color(colors[randColor])
-        .print(font, 0, 0);
+        .scaleToFit(75, 75)
+        .fade(0.05)
   
       // Import image into Jimp
       const image = await Jimp.read(imageDirectory + sep + imageName);
@@ -100,7 +113,9 @@ fs.readdirSync(imageDirectory)
   
       // Append shape to image
       return image
-        .composite(shape, x, y)
+        .composite(shape, x, y, {
+          mode: Jimp.BLEND_MULTIPLY,
+        })
         .write(`${imageName}_with_target.jpg`);
 
     } catch (error) {
