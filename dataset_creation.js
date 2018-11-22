@@ -1,7 +1,5 @@
 const Jimp = require('jimp');
 const fs = require('fs');
-// import path separator based on OS
-const { sep } = require('path');
 
 const imageDirectory = './dataset/images/test';
 
@@ -101,7 +99,7 @@ fs.readdirSync(imageDirectory)
         .print(font, shape.bitmap.width / 2, shape.bitmap.height / 2, letters[randLetter])
         .rotate(Math.random() * 360)
         .color(colors[randColor])
-        .scaleToFit(75, 75)
+        .scaleToFit(75, 75);
         // .fade(0.05)
   
       // Import image into Jimp
