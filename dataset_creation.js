@@ -1,7 +1,10 @@
 const Jimp = require('jimp');
 const fs = require('fs');
+const { sep } = require('path');
 
-const imageDirectory = './dataset/images/test';
+const imageDirectory = `.${sep}dataset${sep}images${sep}test`;
+
+const rand = (max, min) => Math.floor((Math.random() * max) + min);
 
 // Loop through images
 fs.readdirSync(imageDirectory)
@@ -79,9 +82,9 @@ fs.readdirSync(imageDirectory)
         ],
       ];
 
-      const randLetter = Math.floor((Math.random() * letters.length));
-      const randShape = Math.floor((Math.random() * shapes.length));
-      const randColor = Math.floor((Math.random() * colors.length));
+      const randLetter = rand(letters.length, 0);
+      const randShape = rand(shapes.length, 0);
+      const randColor = rand(colors.length, 0);
 
       // Import a random shape into Jimp
       const shape = await Jimp.read(`./shapes/${shapes[randShape]}.png`);
@@ -96,24 +99,22 @@ fs.readdirSync(imageDirectory)
 
       // Attach a color and letter to the shape image
       shape
-        .print(font, shape.bitmap.width / 2, shape.bitmap.height / 2, letters[randLetter])
-        .rotate(Math.random() * 360)
-        .color(colors[randColor])
-        .scaleToFit(75, 75);
-        // .fade(0.05)
+      .color(colors[randColor])
+      .print(font, shape.bitmap.width / 2, shape.bitmap.height / 2, letters[randLetter])
+      .rotate(Math.random() * 360)
+      .scaleToFit(75, 75)
   
       // Import image into Jimp
-      const image = await Jimp.read(imageDirectory + sep + imageName);
+      const image = await Jimp.read(`${imageDirectory}${sep}${imageName}`);
+      console.log(`${imageDirectory}${sep}${imageName}`);
   
       // Random x and y values within the 0 to width and height of image
-      const x = Math.floor((Math.random() * image.bitmap.width) + 1);
-      const y = Math.floor((Math.random() * image.bitmap.height) + 1);
+      const x = rand(image.bitmap.width, 1);
+      const y = rand(image.bitmap.height, 1);
   
       // Append shape to image
       return image
-        .composite(shape, x, y, {
-          mode: Jimp.BLEND_MULTIPLY,
-        })
+        .composite(shape, x, y)
         .write(`${imageDirectory}/output/${imageName}_with_target.jpg`);
 
     } catch (error) {
