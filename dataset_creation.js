@@ -116,7 +116,7 @@ fs.readdirSync(imageDirectory)
         .composite(shape, x, y, {
           mode: Jimp.BLEND_MULTIPLY,
         })
-        .write(`${imageName}_with_target.jpg`);
+        .write(`${imageDirectory}/output/${imageName}_with_target.jpg`);
 
     } catch (error) {
       console.log(error);
