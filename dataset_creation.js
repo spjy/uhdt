@@ -2,7 +2,7 @@ const Jimp = require('jimp');
 const fs = require('fs');
 const { sep } = require('path');
 
-const imageDirectory = `.${sep}dataset${sep}images${sep}test`;
+const imageDirectory = `.${sep}dataset${sep}images${sep}test${sep}re_target_images`;
 
 const rand = (max, min) => Math.floor((Math.random() * max) + min);
 
@@ -99,14 +99,13 @@ fs.readdirSync(imageDirectory)
 
       // Attach a color and letter to the shape image
       shape
-      .color(colors[randColor])
-      .print(font, shape.bitmap.width / 2, shape.bitmap.height / 2, letters[randLetter])
-      .rotate(Math.random() * 360)
-      .scaleToFit(75, 75)
+        .color(colors[randColor])
+        .print(font, shape.bitmap.width / 2, shape.bitmap.height / 2, letters[randLetter])
+        .rotate(Math.random() * 360)
+        .scaleToFit(75, 75)
   
       // Import image into Jimp
-      const image = await Jimp.read(`${imageDirectory}${sep}${imageName}`);
-      console.log(`${imageDirectory}${sep}${imageName}`);
+      const image = await Jimp.read(imageDirectory + sep + imageName);
   
       // Random x and y values within the 0 to width and height of image
       const x = rand(image.bitmap.width, 1);
