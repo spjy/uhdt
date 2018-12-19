@@ -2,8 +2,9 @@ const Jimp = require('jimp');
 const fs = require('fs');
 const { sep } = require('path');
 
-const imageDirectory = `.${sep}dataset${sep}images${sep}test${sep}re_target_images`;
+const imageDirectory = `.${sep}dataset${sep}images${sep}test`;
 
+// Generate random number with max and min values
 const rand = (max, min) => Math.floor((Math.random() * max) + min);
 
 // Loop through images
@@ -11,21 +12,22 @@ fs.readdirSync(imageDirectory)
   .map(async (imageName) => {
     try {
       // Define possible alphanumeric values
-
       const letters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ';
 
       // Define possible shapes
       const shapes = [
-        'HalfCircle',
-        'Heptagon',
-        'Hexagon',
-        'Octagon',
-        'Pentagon',
-        'QuarterCircle',
-        'Rectangle',
+        // 'HalfCircle',
+        // 'Heptagon',
+        // 'Hexagon',
+        // 'Octagon',
+        // 'Pentagon',
+        // 'QuarterCircle',
+        // 'Rectangle',
+        'Square',
         'Star',
-        'Trapezoid',
-        'Triangle',
+        // 'Trapezoid',
+        // 'Triangle',
+        // 'Circle'
       ];
 
       // Red, green, blue, black, white, grey, yellow, purple, brown, orange
@@ -97,15 +99,19 @@ fs.readdirSync(imageDirectory)
         font = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
       }
 
+      const randScaleToFit = rand(70, 50);
+
       // Attach a color and letter to the shape image
       shape
+        .gaussian(rand(6,1))
         .color(colors[randColor])
         .print(font, shape.bitmap.width / 2, shape.bitmap.height / 2, letters[randLetter])
-        .rotate(Math.random() * 360)
-        .scaleToFit(75, 75)
+        .rotate(rand(360, 0))
+        .scaleToFit(randScaleToFit, randScaleToFit);
   
       // Import image into Jimp
       const image = await Jimp.read(imageDirectory + sep + imageName);
+      console.log(`Loaded ${imageName}`)
   
       // Random x and y values within the 0 to width and height of image
       const x = rand(image.bitmap.width, 1);
@@ -113,8 +119,8 @@ fs.readdirSync(imageDirectory)
   
       // Append shape to image
       return image
-        .composite(shape, x, y)
-        .write(`${imageDirectory}/output/${imageName}_with_target.jpg`);
+        .composite(shape, x - (randScaleToFit + 10), y - (randScaleToFit + 10)) // Append shape, prevent from going outside of image
+        .write(`${imageDirectory}/output/${imageName}_with_target1.jpg`);
 
     } catch (error) {
       console.log(error);

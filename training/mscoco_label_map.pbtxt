@@ -1,0 +1,53 @@
+item {
+  id: 1,
+  name: 'circle'
+}
+item {
+  id: 2,
+  name: 'semicircle'
+}
+item {
+  id: 3,
+  name: 'quarter_circle'
+}
+item {
+  id: 4,
+  name: 'triangle'
+}
+item {
+  id: 5,
+  name: 'square'
+}
+item {
+  id: 6,
+  name: 'rectangle'
+}
+item {
+  id: 7,
+  name: 'trapezoid'
+}
+item {
+  id: 8,
+  name: 'pentagon'
+}
+item {
+  id: 9,
+  name: 'hexagon'
+}
+item {
+  id: 10,
+  name: 'heptagon'
+}
+item {
+  id: 11,
+  name: 'octagon'
+}
+item {
+  id: 12,
+  name: 'star'
+}
+item {
+  id: 13,
+  name: 'cross'
+}
+
