@@ -39,7 +39,7 @@ The following is a description of various files and directories relative to the 
 As mentioned in the brief, this program has the ability to select a random shape and letter and also choose a random blurriness amount, color, shape, orientation, location and size. Here are the options in more detail:
 
 ### Blurriness Amount
-Since blurry pictures are a possibility due to, for example, having a low shutter speed but high aircraft speed. A Gaussian blur is applied and has a range of values of `1-7`.
+Since blurry pictures are a possibility due to, for example, having a low shutter speed but high aircraft speed, training for this instance is justified. To do this, we will apply a Gaussian blur; it has a range of values of `1-7` where 1 is the least blurry.
 
 ### Color
 The following are the possible colors that the program can randomize, and these colors are specified by AUVSI SUAS.
