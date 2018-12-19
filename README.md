@@ -16,3 +16,11 @@ The program generates shapes that are sufficiently accurate enough for the objec
 3. Place images in `./dataset/images/test`
 4. Run script `npm start`
 5. Pictures will output to `./dataset/images/test/output/{imageName}_with_target.jpg`
+
+## Directory Structure
+
+`dataset_creation.js` - This is the script that appends a random shape to each image.
+`tfrecord_gen.py` - This script automatically generates the .tfrecord file.
+`/shapes` - This directory contains the shape files to append to each image.
+`/dataset` - This directory contains the images that you would like to append the shapes to. To change the working directory, edit line 5 within `dataset_creation.js`.
+`/dataset/output` - This is where you will find the outputted images/.tfrecord files.
