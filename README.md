@@ -6,6 +6,8 @@ In a nutshell, functionally, the program loops through all images within a direc
 
 The program generates shapes that are sufficiently accurate enough for the object detection model to learn; it only needs to learn the basic characteristics of each shape with similar backgrounds to the competition. We are exploiting the way that a neural network works through data augmentation. For example, given a shape with the same characteristics, if it is rotated even by only one degree, it sees that as a completely different shape. Thus, we can vary the same shape in different ways and as a result it will have a positive affect the neural network's learning.
 
+For instructions on training the dataset, [see here](https://github.com/spjy/uhdt/tree/master/training).
+
 ## Requirements
 1. Node.js (latest LTS version)
 2. Git
