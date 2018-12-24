@@ -54,7 +54,7 @@ that means you did not add Python to your PATH. Simply go back to step #1 and fo
   >
   >**f.** Change directory into /models/research: ```cd models/research```
   >
-  >**g.** Open a terminal in the directory you just changed to and run: ```“C:\Program Files\protoc-3.6.1-win32\bin\protoc.exe” --python_out=. object_detection/protos/*.proto```
+  >**g.** Open a terminal in the directory you just changed to and run: ```for %f in (object_detection/protos/*.proto) do "C:\Program Files\protoc-3.6.1-win32\bin\protoc.exe" --python_out=. object_detection/protos/%f```
   >
   >**h.** Add the /slim directory of Python scripts to your PYTHONPATH: ```set PYTHONPATH=$PYTHONPATH:`cd`:`cd`/slim```
   >
