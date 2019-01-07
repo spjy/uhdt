@@ -8,19 +8,9 @@ After you have a hefty data set built, the next step is to train the model via t
 3. TensorFlow Object Detection API
 4. Git
 
-## Installation Difficulties
-
-While installing everything manually, I ran into various issues:
-
-1. When compiling .proto files, make sure to add the `--python_out=.` flag directly after `protoc.exe`. It must be a parsing error of the arguments on Protobuf's
-2. Be sure to run the object detection setup using `py setup.py` install in `models/research`.
-3. Make sure to add /models/research/slim to the PYTHONPATH
-4. Only have one Python installation at a time or make sure the Python installation you are using is the one specified in your PATH.
-5. Only have either the TF CPU or TF-GPU installed at a time. They will conflict with each other.
-
 ## Installation
 
-The installation instructions will start from Python. This will assume you use a computer with the Windows 7+ operating system.
+The installation instructions will start from the Python installation. In addition, this will assume you use a computer with the Windows 7+ operating system.
 
 1. Install Python 3.4 - 3.6
 
@@ -64,16 +54,28 @@ that means you did not add Python to your PATH. Simply go back to step #1 and fo
   >
   >**f.** Change directory into /models/research: ```cd models/research```
   >
-  >**g.** Open a terminal in the directory you just changed to and run: ```“C:\Program Files\protoc-3.6.1-win32\bin\protoc.exe” --python_out=. object_detection/protos/*.proto```
+  >**g.** Run the setup `py setup.py install`
   >
-  >**h.** Add the /slim directory of Python scripts to your PYTHONPATH: ```set PYTHONPATH=$PYTHONPATH:`cd`:`cd`/slim```
+  >**h.** Open a terminal in the directory you just changed to and run: ```for %f in (object_detection/protos/*.proto) do "C:\Program Files\protoc-3.6.1-win32\bin\protoc.exe" --python_out=. object_detection/protos/%f```
   >
-  >**i.** Test your installation ```python object_detection/builders/model_builder_test.py```
+  >**i.** Add the /slim directory of Python scripts to your PYTHONPATH: ```set PYTHONPATH=$PYTHONPATH:`cd`:`cd`/slim```
+  >
+  >**j.** Test your installation ```python object_detection/builders/model_builder_test.py```
+
+## Installation Difficulties
+
+While installing everything manually, I ran into various issues:
+
+1. When compiling .proto files, make sure to add the `--python_out=.` flag directly after `protoc.exe`. It must be a parsing error of the arguments on Protobuf's
+2. Be sure to run the object detection setup using `py setup.py install` install in `models/research`. This step isn't mentioned in the official installation.
+3. Make sure to add `/models/research/slim` to the PYTHONPATH.
+4. Only have one Python installation at a time or make sure the Python installation you are using is the one specified in your PATH.
+5. Only have either the TF CPU or TF-GPU installed at a time. They will conflict with each other.
 
 ## Training the Object Detection Model
 Before training the model, be sure you have the following:
 
-1. A model config file 
+1. A model config file
 2. The checkpoint (.ckpt) file from the model
 3. A label map of possible classes
 4. TFRecord files to train on

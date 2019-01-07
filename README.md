@@ -2,9 +2,11 @@
 
 The UHDT Data Set Creator is a JavaScript application built using the JavaScript Image Manipulation Program. It allows us to semi-autonomously incorporate various shapes including randomized sizes, colors, shapes, shape/letter orientation, location, and letters that we could possibly see in the competition rather than manually appending shapes and randomizing attributes in a photo editing program. As a result, not only less time will be needed to generate the dataset, but we will also increase the size of the data set significantly. Creating a gargantuan amount of data, on the order of 10^4 datapoints, is essential for accurate results. 
 
-In a nutshell, functionally, the program loops through all images within a directory and loads the said images into memory. Simultaneously, it loads in a random shape and letter and also chooses a random blurriness amount, color, shape, orientation, location and size using a random number generator. From there, it will composite the previously selected random attributes onto image loaded into memory. It will loop until all images have been covered within the directory. After it is finished with compositing the image, a command will be sent in order to run the TensorFlow Record (tfrecord) generator. It requires the height, width, filename, image data, image format, bounding box minima and maxima and classes, all of which will be passed in via arguments. It will output the into a .tfrecord file which is required for training the object detection model. This whole process takes five seconds on average per image; to the contrary a manual process would take approximately 15x longer than this method.
+In a nutshell, functionally, the program loops through all images within a directory and loads the said images into memory. After loading the image, it loads in a random shape and letter and also chooses a random blurriness amount, color, shape, orientation, location and size using a random number generator. From there, it will composite the previously selected random attributes onto image loaded into memory. It will loop until all images have been covered within the directory. After it is finished with compositing the image, a command will be sent in order to run the TensorFlow Record (tfrecord) generator. It requires the height, width, filename, image data, image format, bounding box minima and maxima and classes, all of which will be passed in via arguments. It will output the into a .tfrecord file which is required for training the object detection model. This whole process takes five seconds on average per image; to the contrary a manual process would take approximately 15x longer than this method.
 
 The program generates shapes that are sufficiently accurate enough for the object detection model to learn; it only needs to learn the basic characteristics of each shape with similar backgrounds to the competition. We are exploiting the way that a neural network works through data augmentation. For example, given a shape with the same characteristics, if it is rotated even by only one degree, it sees that as a completely different shape. Thus, we can vary the same shape in different ways and as a result it will have a positive affect the neural network's learning.
+
+For instructions on training the dataset, [see here](https://github.com/spjy/uhdt/tree/master/training).
 
 ## Requirements
 1. Node.js (latest LTS version)
@@ -39,7 +41,7 @@ The following is a description of various files and directories relative to the 
 As mentioned in the brief, this program has the ability to select a random shape and letter and also choose a random blurriness amount, color, shape, orientation, location and size. Here are the options in more detail:
 
 ### Blurriness Amount
-Since blurry pictures are a possibility due to, for example, having a low shutter speed but high aircraft speed. A Gaussian blur is applied and has a range of values of `1-7`.
+Since blurry pictures are a possibility due to, for example, having a low shutter speed but high aircraft speed, training for this instance is justified. To do this, we will apply a Gaussian blur; it has a range of values of `1-7` where 1 is the least blurry.
 
 ### Color
 The following are the possible colors that the program can randomize, and these colors are specified by AUVSI SUAS.
