@@ -1,6 +1,7 @@
 import argparse
 import numpy as np
 import tensorflow as tf
+import os, os.path
 from PIL import Image
 from object_detection.utils import dataset_util
 
@@ -35,14 +36,18 @@ class_dict = {
   13: b'cross'
 }
 
+numberOfFiles = len([name for name in os.listdir('./tfrecords') if os.path.isfile(os.path.join('./tfrecords', name))])
+
+cwd = os.getcwd()
+
 # Write tfrecord
-writer = tf.io.TFRecordWriter('C:/Websites/uhdt/tfrecords/data.tfrecord')
+writer = tf.io.TFRecordWriter(os.path.join(cwd, 'tfrecords', 'train.record-' + str(numberOfFiles)))
 
 height = args.height # Image height
 width = args.width # Image width
 image_path = args.image_path
 filename = str.encode(args.filename) # Filename of the image. Empty if image is not from file
-with tf.gfile.GFile(filename, 'rb') as fid: # Encoded image bytes
+with tf.gfile.GFile(os.path.join(args.image_path, args.filename), 'rb') as fid: # Encoded image bytes
   encoded_image_data = bytes(fid.read())
 image_format = b'jpg' # b'jpeg' or b'png'
 
@@ -63,18 +68,18 @@ for text in args.classes_text:
 classes = args.classes # List of integer class id of bounding box (1 per box)
 # TODO END
 tf_label_and_data = tf.train.Example(features=tf.train.Features(feature={
-    'image/height': dataset_util.int64_feature(height),
-    'image/width': dataset_util.int64_feature(width),
-    'image/filename': dataset_util.bytes_feature(filename),
-    'image/source_id': dataset_util.bytes_feature(filename),
-    'image/encoded': dataset_util.bytes_feature(encoded_image_data),
-    'image/format': dataset_util.bytes_feature(image_format),
-    'image/object/bbox/xmin': dataset_util.float_list_feature(xmins),
-    'image/object/bbox/xmax': dataset_util.float_list_feature(xmaxs),
-    'image/object/bbox/ymin': dataset_util.float_list_feature(ymins),
-    'image/object/bbox/ymax': dataset_util.float_list_feature(ymaxs),
-    'image/object/class/text': dataset_util.bytes_list_feature(classes_text),
-    'image/object/class/label': dataset_util.int64_list_feature(classes),
+  'image/height': dataset_util.int64_feature(height),
+  'image/width': dataset_util.int64_feature(width),
+  'image/filename': dataset_util.bytes_feature(filename),
+  'image/source_id': dataset_util.bytes_feature(filename),
+  'image/encoded': dataset_util.bytes_feature(encoded_image_data),
+  'image/format': dataset_util.bytes_feature(image_format),
+  'image/object/bbox/xmin': dataset_util.float_list_feature(xmins),
+  'image/object/bbox/xmax': dataset_util.float_list_feature(xmaxs),
+  'image/object/bbox/ymin': dataset_util.float_list_feature(ymins),
+  'image/object/bbox/ymax': dataset_util.float_list_feature(ymaxs),
+  'image/object/class/text': dataset_util.bytes_list_feature(classes_text),
+  'image/object/class/label': dataset_util.int64_list_feature(classes),
 }))
 
 # Write to file

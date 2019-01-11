@@ -1,9 +1,9 @@
 const Jimp = require('jimp');
 const fs = require('fs');
-const { sep } = require('path');
+const path = require('path');
 const exec = require('child_process').exec;
 
-const imageDirectory = `.${sep}dataset${sep}images${sep}tfr`;
+const imageDirectory = path.join(__dirname, 'dataset', 'images', 'tfr');
 
 // Generate random number with max and min values
 const rand = (max, min) => Math.floor((Math.random() * max) + min);
@@ -114,21 +114,21 @@ fs.readdirSync(imageDirectory)
         .scaleToFit(randDimensions, randDimensions);
   
       // Import image into Jimp
-      const image = await Jimp.read(imageDirectory + sep + imageName);
+      const image = await Jimp.read(imageDirectory + path.sep + imageName);
       console.log(`Loaded ${imageName}`)
   
       // Random x and y values within the width and height of image minus dimensions of 
-      const x = rand(image.bitmap.width, 1) - (randDimensions + 10);
-      const y = rand(image.bitmap.height, 1) - (randDimensions + 10);
+      const x = rand(image.bitmap.width, 1) - (randDimensions + 20);
+      const y = rand(image.bitmap.height, 1) - (randDimensions + 20);
   
       // Append shape to image
       image
         .composite(shape, x, y) // Append shape, prevent from going outside of image
-        .write(`${imageDirectory}/output/${imageName}_with_target1.jpg`);
+        .write(`${imageDirectory}/output/${imageName}`)
 
-      exec(`py C:/Websites/uhdt/tfrecord_gen.py --height ${image.bitmap.height} --width ${image.bitmap.width} --filename ${imageName}_with_target1.jpg --image_path ${__dirname + '/output'} --xmins ${x} --xmaxs ${x + randDimensions} --ymins ${y} --ymaxs ${x + randDimensions} --classes_text ${shapes[randShape]} --classes ${randShape}`)
+      exec(`py ${path.join(__dirname, 'tfrecord_gen.py')} --height ${image.bitmap.height} --width ${image.bitmap.width} --filename ${imageName} --image_path ${imageDirectory} --xmins ${x} --xmaxs ${x + randDimensions} --ymins ${y} --ymaxs ${x + randDimensions} --classes_text ${shapes[randShape]} --classes ${randShape}`)
 
-      console.log(`py C:/Websites/uhdt/tfrecord_gen.py --height ${image.bitmap.height} --width ${image.bitmap.width} --filename ${imageName}_with_target1.jpg --image_path ${__dirname + '/output'} --xmins ${x} --xmaxs ${x + randDimensions} --ymins ${y} --ymaxs ${x + randDimensions} --classes_text ${shapes[randShape]} --classes ${randShape}`)
+      console.log(`py ${path.join(__dirname, 'tfrecord_gen.py')} --height ${image.bitmap.height} --width ${image.bitmap.width} --filename ${imageName} --image_path ${imageDirectory + path.sep}output --xmins ${x} --xmaxs ${x + randDimensions} --ymins ${y} --ymaxs ${x + randDimensions} --classes_text ${shapes[randShape]} --classes ${randShape}`)
     } catch (error) {
       console.log(error);
     }
