@@ -106,7 +106,7 @@ After the compositing of the shape onto the image, a TFRecord file is generated 
 
 4. `encoded_image_data`
 
-**Data Type**: base64
+**Data Type**: binary
 
 **Description**: The image but encoded into base64 format.
 
@@ -118,37 +118,37 @@ After the compositing of the shape onto the image, a TFRecord file is generated 
 
 6. `xmin`
 
-**Data Type**: list
+**Data Type**: list of floats
 
 **Description**: A list of normalized left x coordinates in bounding box (1 per box)
 
 7. `xmax`
 
-**Data Type**: list
+**Data Type**: list of floats
 
 **Description**: A list of normalized right x coordinates in bounding box (1 per box)
 
 8. `ymin`
 
-**Data Type**: list
+**Data Type**: list of floats
 
 **Description**: A list of normalized top y coordinates in bounding box (1 per box)
 
 9. `ymax`
 
-**Data Type**: list
+**Data Type**: list of floats
 
 **Description**: A list of normalized bottom y coordinates in bounding box(1 per box)
 
 10. `text`
 
-**Data Type**: list
+**Data Type**: list of strings
 
 **Description**: A list of strings of human readable class names.
 
 11. `label`
 
-**Data Type**: list
+**Data Type**: list of integers
 
 **Description**: A list of integer values of the classes.
 
@@ -159,12 +159,12 @@ python tfrecord_gen.py
   --height 1920
   --width 1080
   --filename 'IMAGE_NAME'
-  --encoded_image_data base64(IMAGE_NAME)
+  --encoded_image_data
   --image_format 'jpeg'
-  --xmins [20]
-  --xmaxs [403]
-  --ymins [1041]
-  --ymaxs [203]
+  --xmins [20 / width]
+  --xmaxs [403 / width]
+  --ymins [1041 / height]
+  --ymaxs [203 / height]
   --classes_text ['square']
   --classes [4]
 ```
