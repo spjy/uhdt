@@ -5,23 +5,7 @@ const exec = require('child_process').exec;
 
 const imageDirectory = path.join(__dirname, 'dataset', 'images', 'tfr');
 
-/**
- * 
- * @param {*} max maximum random number
- * @param {*} min minimum random number
- */
 const rand = (max, min) => Math.floor((Math.random() * max) + min);
-
-/**
- * 
- * @param {*} image Image being read in by fs
- * @param {*} shape random shape read in by JIMP
- * @param {*} shapeDimensions size of shape image
- * @param {Number} width image's width
- * @param {Number} height image's height
- * @param {String} imageDirectory current working directory
- * @param {String} imageName name of image
- */
 
 // Define possible alphanumeric values
 const letters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ';
@@ -129,7 +113,6 @@ fs.readdirSync(imageDirectory)
         const limitX = x + randDimensions;
         const limitY = y + randDimensions;
 
-        console.log('shape', limitX, limitY)
         if (limitX < image.bitmap.width && limitY < image.bitmap.height) {
           ;(function rotateRepeat(degrees) {
             console.log(degrees)
@@ -151,7 +134,6 @@ fs.readdirSync(imageDirectory)
 
             console.log(degrees)
             if (degrees < 360) {
-              console.log(degrees)
 
               return rotateRepeat(degrees + 0.5)
             } else {
@@ -159,15 +141,11 @@ fs.readdirSync(imageDirectory)
             }
           })(0)
 
-          console.log('in', x, y)
-
           return shapeRepeat(x + 1, y + 1);
         } else {
           return;
         }
       })(0, 0)
-  
-      repeatShape(image, imageDirectory, imageName, shape, randDimensions, randShape, 0, 0);
     } catch (error) {
       console.log(error);
     }
