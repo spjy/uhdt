@@ -5,8 +5,23 @@ const exec = require('child_process').exec;
 
 const imageDirectory = path.join(__dirname, 'dataset', 'images', 'tfr');
 
-// Generate random number with max and min values
+/**
+ * 
+ * @param {*} max maximum random number
+ * @param {*} min minimum random number
+ */
 const rand = (max, min) => Math.floor((Math.random() * max) + min);
+
+/**
+ * 
+ * @param {*} image Image being read in by fs
+ * @param {*} shape random shape read in by JIMP
+ * @param {*} shapeDimensions size of shape image
+ * @param {Number} width image's width
+ * @param {Number} height image's height
+ * @param {String} imageDirectory current working directory
+ * @param {String} imageName name of image
+ */
 
 // Define possible alphanumeric values
 const letters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ';
@@ -102,33 +117,57 @@ fs.readdirSync(imageDirectory)
       }
 
       // Random shape size
-      const randDimensions = rand(70, 50);
-      const randRotation = rand(360, 0);
+      const randDimensions = rand(80, 40);
 
       // Attach a color and letter to the shape image
-      shape
-        .gaussian(rand(2,1))
-        .color(colors[randColor])
-        .print(font, shape.bitmap.width / 2, shape.bitmap.height / 2, letters[randLetter])
-        .rotate(randRotation)
-        .scaleToFit(randDimensions, randDimensions);
   
       // Import image into Jimp
       const image = await Jimp.read(imageDirectory + path.sep + imageName);
       console.log(`Loaded ${imageName}`)
-  
-      // Random x and y values within the width and height of image minus dimensions of 
-      const x = rand(image.bitmap.width, 1) - (randDimensions + 20);
-      const y = rand(image.bitmap.height, 1) - (randDimensions + 20);
-  
-      // Append shape to image
-      image
-        .composite(shape, x, y) // Append shape, prevent from going outside of image
-        .write(`${imageDirectory}/output/${imageName}`)
 
-      exec(`py ${path.join(__dirname, 'tfrecord_gen.py')} --height ${image.bitmap.height} --width ${image.bitmap.width} --filename ${imageName} --image_path ${imageDirectory} --xmins ${x} --xmaxs ${x + randDimensions} --ymins ${y} --ymaxs ${x + randDimensions} --classes_text ${shapes[randShape]} --classes ${randShape}`)
+      ;(function shapeRepeat(x, y) {
+        const limitX = x + randDimensions;
+        const limitY = y + randDimensions;
 
-      console.log(`py ${path.join(__dirname, 'tfrecord_gen.py')} --height ${image.bitmap.height} --width ${image.bitmap.width} --filename ${imageName} --image_path ${imageDirectory + path.sep}output --xmins ${x} --xmaxs ${x + randDimensions} --ymins ${y} --ymaxs ${x + randDimensions} --classes_text ${shapes[randShape]} --classes ${randShape}`)
+        console.log('shape', limitX, limitY)
+        if (limitX < image.bitmap.width && limitY < image.bitmap.height) {
+          ;(function rotateRepeat(degrees) {
+            console.log(degrees)
+
+            shape
+              .gaussian(rand(2,1))
+              .color(colors[randColor])
+              .print(font, shape.bitmap.width / 2, shape.bitmap.height / 2, letters[randLetter])
+              .scaleToFit(randDimensions, randDimensions)
+              .rotate(degrees);
+
+            image
+              .composite(shape, x, y)
+              .write(`${imageDirectory}/output/${imageName.split('.')[0]}_${x}_${y}_${degrees}.JPG`)
+
+            exec(`py ${path.join(__dirname, 'tfrecord_gen.py')} --height ${image.bitmap.height} --width ${image.bitmap.width} --filename ${imageName} --image_path ${imageDirectory} --xmins ${x} --xmaxs ${x + randDimensions} --ymins ${y} --ymaxs ${x + randDimensions} --classes_text ${shapes[randShape]} --classes ${randShape}`)
+
+            console.log(`py ${path.join(__dirname, 'tfrecord_gen.py')} --height ${image.bitmap.height} --width ${image.bitmap.width} --filename ${imageName} --image_path ${imageDirectory + path.sep}output --xmins ${x} --xmaxs ${x + randDimensions} --ymins ${y} --ymaxs ${x + randDimensions} --classes_text ${shapes[randShape]} --classes ${randShape}`)
+
+            console.log(degrees)
+            if (degrees < 360) {
+              console.log(degrees)
+
+              return rotateRepeat(degrees + 0.5)
+            } else {
+              return;
+            }
+          })(0)
+
+          console.log('in', x, y)
+
+          return shapeRepeat(x + 1, y + 1);
+        } else {
+          return;
+        }
+      })(0, 0)
+  
+      repeatShape(image, imageDirectory, imageName, shape, randDimensions, randShape, 0, 0);
     } catch (error) {
       console.log(error);
     }
