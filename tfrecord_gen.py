@@ -1,8 +1,6 @@
 import argparse
-import numpy as np
 import tensorflow as tf
 import os, os.path
-from PIL import Image
 from object_detection.utils import dataset_util
 
 # Get command line arguments
