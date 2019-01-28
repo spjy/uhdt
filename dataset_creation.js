@@ -86,14 +86,11 @@ async function shapeRepeat(x, y, settings) {
   const limitX = x + settings.randDimensions
   const limitY = y + settings.randDimensions
 
-  console.log(limitX, limitY, settings)
-
   if (limitX < settings.image.bitmap.width && limitY < settings.image.bitmap.height) {
     await rotateRepeat(0, x, y, settings)
 
     await shapeRepeat(x + 1, y + 1, settings)
   } else {
-    console.log('exit')
     return
   }
 }
@@ -108,7 +105,7 @@ async function rotateRepeat(degrees, x, y, settings) {
     .composite(settings.shape, x, y)
     .write(`${settings.imageDirectory}/output/${degrees}_${x}_${y}_${settings.imageName}`)
 
-  exec(`py ${path.join(__dirname, 'tfrecord_gen.py')} --height ${settings.image.bitmap.height} --width ${settings.image.bitmap.width} --filename ${settings.imageName} --image_path ${settings.imageDirectory} --xmins ${x} --xmaxs ${x + settings.randDimensions} --ymins ${y} --ymaxs ${x + settings.randDimensions} --classes_text ${shapes[settings.randShape]} --classes ${settings.randShape}`)
+  // exec(`py ${path.join(__dirname, 'tfrecord_gen.py')} --height ${settings.image.bitmap.height} --width ${settings.image.bitmap.width} --filename ${settings.imageName} --image_path ${settings.imageDirectory} --xmins ${x} --xmaxs ${x + settings.randDimensions} --ymins ${y} --ymaxs ${x + settings.randDimensions} --classes_text ${shapes[settings.randShape]} --classes ${settings.randShape}`)
 
   console.log(`py ${path.join(__dirname, 'tfrecord_gen.py')} --height ${settings.image.bitmap.height} --width ${settings.image.bitmap.width} --filename ${settings.imageName} --image_path ${settings.imageDirectory + path.sep}output --xmins ${x} --xmaxs ${x + settings.randDimensions} --ymins ${y} --ymaxs ${x + settings.randDimensions} --classes_text ${shapes[settings.randShape]} --classes ${settings.randShape}`)
 
