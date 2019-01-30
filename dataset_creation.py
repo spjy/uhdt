@@ -49,24 +49,29 @@ def __convertShapeColor(shape, rgb):
 def __rotateRepeat(x, y, image, imageName, imagePath, shape, shapeDimensions, shapeClass, color, letter, degrees):
   copy = image.copy() # Retain original image
 
-  rotatedShape = shape.rotate(degrees, resample=Image.BICUBIC).filter(ImageFilter.GaussianBlur(1.2)) # Rotate and apply Gaussian blur
+  rotatedShape = shape.rotate(degrees, resample=Image.BICUBIC, expand=True).filter(ImageFilter.GaussianBlur(1.2)) # Rotate and apply Gaussian blur
 
   image.paste(rotatedShape, (x, y), None if shapeClass == 4 else rotatedShape) # Combine shape into image, add mask if not square
-  filename = '%s_%s_%s_%s_%s_%s_%s_%s' % (color[0], color[1], color[2], letter, degrees, x, y, imageName)
+  filename = f'{color[0]}_{color[1]}_{color[2]}_{letter}_{degrees}_{x}_{y}_{imageName}'
   image.save(path.join(imagePath, 'output', filename)) # Save image
-  # image.crop((x, y, x + shapeDimensions, y + shapeDimensions)).show()
 
-  subprocess.Popen('py tfrecord_gen.py --height %s --width %s --filename %s --image_path %s --xmins %s --xmaxs %s --ymins %s --ymaxs %s --classes_text %s --classes %s' % (image.height, image.width, filename, path.join(imagePath, 'output'), x / image.width, (x + shape.width) / image.width, y / image.height, (y + shape.height) / image.height, shapes[shapeClass], shapeClass))
+  xmin = x - 1
+  xmax = x + 1 + rotatedShape.width
+  ymin = y - 1
+  ymax = y + 1 + rotatedShape.height
 
-  print('py tfrecord_gen.py --height %s --width %s --filename %s --image_path %s --xmins %s --xmaxs %s --ymins %s --ymaxs %s --classes_text %s --classes %s' % (image.height, image.width, filename, path.join(imagePath, 'output'), x / image.width, (x + shape.width) / image.width, y / image.height, (y + shape.height) / image.height, shapes[shapeClass], shapeClass))
+  # image.crop((xmin, ymin, xmax, ymax)).show()
+
+  subprocess.Popen('py tfrecord_gen.py --height %s --width %s --filename %s --image_path %s --xmins %s --xmaxs %s --ymins %s --ymaxs %s --classes_text %s --classes %s' % (image.height, image.width, filename, path.join(imagePath, 'output'), x / image.width, (x + shape.width) / image.width, y / image.height, (y + shape.height) / image.height, shapes[shapeClass], shapeClass), close_fds=True)
+
+  print('py tfrecord_gen.py --height %s --width %s --filename %s --image_path %s --xmins %s --xmaxs %s --ymins %s --ymaxs %s --classes_text %s --classes %s' % (image.height, image.width, filename, path.join(imagePath, 'output'), xmin / image.width, xmax / image.width, ymin / image.height, ymax / image.height, shapes[shapeClass], shapeClass))
 
   if (degrees < 360):
     print(degrees)
-    return __rotateRepeat(x, y, copy, imageName, imagePath, shape, shapeDimensions, shapeClass, color, letter, degrees + 60)
+    return __rotateRepeat(x, y, copy, imageName, imagePath, shape, shapeDimensions, shapeClass, color, letter, degrees + 1)
   else:
     return copy
 
-# settings = { image, shape, shapeDimensions }
 def __repeatShape(x, y, image, imageName, imagePath, shape, shapeDimensions, shapeClass, color, letter) :
   limitX = x + shape.width
   limitY = y + shape.height
