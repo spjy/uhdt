@@ -62,7 +62,7 @@ def __rotateRepeat(x, y, image, imageName, imagePath, shape, shapeDimensions, sh
 
   # image.crop((xmin, ymin, xmax, ymax)).show()
 
-  os.system('py tfrecord_gen.py --height %s --width %s --filename %s --image_path %s --xmins %s --xmaxs %s --ymins %s --ymaxs %s --classes_text %s --classes %s' % (image.height, image.width, filename, path.join(imagePath, 'output'), x / image.width, (x + shape.width) / image.width, y / image.height, (y + shape.height) / image.height, shapes[shapeClass], shapeClass))
+  os.system('py tfrecord_gen.py --height %s --width %s --filename %s --image_path %s --xmins %s --xmaxs %s --ymins %s --ymaxs %s --classes_text %s --classes %s' % (image.height, image.width, filename, path.join(imagePath, 'output'), xmin / image.width, xmax / image.width, ymin / image.height, ymax / image.height, shapes[shapeClass], shapeClass))
 
   print('py tfrecord_gen.py --height %s --width %s --filename %s --image_path %s --xmins %s --xmaxs %s --ymins %s --ymaxs %s --classes_text %s --classes %s' % (image.height, image.width, filename, path.join(imagePath, 'output'), xmin / image.width, xmax / image.width, ymin / image.height, ymax / image.height, shapes[shapeClass], shapeClass))
 
